@@ -1,31 +1,34 @@
-import React from 'react';
-import {View, Text, Image, Modal, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors} from '../colors';
+import React, {useEffect} from 'react';
+import {
+  StatusBar,
+  Text,
+  View,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
+import LogoMark from '../components/LogoMark';
 
-// The "FOOD delivery app" popup that shows BEFORE the first splash screen.
-// "Modal" is React Native's built-in popup. Tapping "Continue" calls onContinue,
-// which tells App.js to show Splash 1.
 export default function PopupScreen({onContinue}) {
+  const {width} = useWindowDimensions();
+  const cardWidth = width * 0.634;
+
+  useEffect(() => {
+    const timer = setTimeout(onContinue, 1500);
+    return () => clearTimeout(timer);
+  }, [onContinue]);
+
   return (
     <View style={styles.background}>
-      <Modal transparent={true} animationType="fade" visible={true} statusBarTranslucent={true}>
-        {/* dark see-through layer behind the popup */}
-        <View style={styles.overlay}>
-          {/* the white popup box */}
-          <View style={styles.card}>
-            <View style={styles.logoCircle}>
-              <Image source={require('../assets/logo.png')} style={styles.logo} />
-            </View>
-
-            <Text style={styles.title}>FOOD delivery app</Text>
-            <Text style={styles.message}>Good Food. Greater Opportunities.</Text>
-
-            <TouchableOpacity style={styles.button} onPress={onContinue}>
-              <Text style={styles.buttonText}>Continue</Text>
-            </TouchableOpacity>
-          </View>
+      <StatusBar hidden />
+      <View style={[styles.card, {width: cardWidth, height: cardWidth}]}>
+        <LogoMark size={cardWidth * 0.66} />
+        <Text style={styles.title}>Food Delivery Partner</Text>
+        <View style={styles.dots}>
+          <View style={styles.activeDot} />
+          <View style={styles.inactiveDot} />
+          <View style={styles.inactiveDot} />
         </View>
-      </Modal>
+      </View>
     </View>
   );
 }
@@ -33,57 +36,38 @@ export default function PopupScreen({onContinue}) {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: colors.cream,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: '#FF512B',
     justifyContent: 'center',
     alignItems: 'center',
   },
   card: {
-    width: 300,
-    paddingVertical: 28,
-    paddingHorizontal: 24,
-    borderRadius: 20,
-    backgroundColor: colors.white,
+    borderRadius: 32,
+    backgroundColor: 'rgba(255,255,255,0.25)',
     alignItems: 'center',
-  },
-  logoCircle: {
-    width: 84,
-    height: 84,
-    borderRadius: 42,
-    backgroundColor: colors.primary,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 38,
-    height: 44,
   },
   title: {
-    marginTop: 18,
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.black,
+    marginTop: 4,
+    fontSize: 17,
+    fontWeight: '500',
+    color: '#FFFFFF',
   },
-  message: {
-    marginTop: 8,
-    fontSize: 15,
-    textAlign: 'center',
-    color: '#555555',
-  },
-  button: {
-    marginTop: 24,
-    alignSelf: 'stretch',
-    height: 44,
-    borderRadius: 8,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
+  dots: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 9,
+    marginTop: 21,
   },
-  buttonText: {
-    fontSize: 16,
-    color: colors.white,
+  activeDot: {
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+  },
+  inactiveDot: {
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    backgroundColor: 'rgba(255,255,255,0.35)',
   },
 });
